@@ -1,0 +1,70 @@
+:root {
+  --burgundy: #800020;
+  --burgundy-dark: #5C0017;
+  --white: #FFFFFF;
+  --gray-bg: #FAFAFA;
+  --border: #DBDBDB;
+}
+
+body {
+  background: var(--gray-bg);
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.instory-container {
+  max-width: 470px;
+  margin: 20px auto;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.instory-user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.profile-pic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--gray-bg);
+}
+
+.instory-username {
+  font-weight: 600;
+  color: var(--burgundy);
+}
+
+button {
+  background: var(--burgundy);
+  color: var(--white);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:hover {
+  background: var(--burgundy-dark);
+}
+.follow-btn {
+  margin-left: auto;
+  background: var(--burgundy);
+  color: var(--white);
+  border: none;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.follow-btn:hover {
+  background: var(--burgundy-dark);
+}
