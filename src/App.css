@@ -1,70 +1,70 @@
-:root {
-  --burgundy: #800020;
-  --burgundy-dark: #5C0017;
-  --white: #FFFFFF;
-  --gray-bg: #FAFAFA;
-  --border: #DBDBDB;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--gray-bg);
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #fafafa;
+  color: #262626;
 }
 
-.instory-container {
-  max-width: 470px;
-  margin: 20px auto;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px;
-}
-
-.instory-user-row {
+.container {
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  justify-content: center;
+  padding: 20px;
 }
 
-.profile-pic {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: var(--gray-bg);
-}
-
-.instory-username {
-  font-weight: 600;
-  color: var(--burgundy);
-}
-
-button {
-  background: var(--burgundy);
-  color: var(--white);
-  border: none;
-  padding: 8px 12px;
+.login-box {
+  background: white;
+  border: 1px solid #dbdb;
   border-radius: 8px;
+  padding: 40px;
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+}
+
+.logo {
+  font-family: 'Brush Script MT', cursive;
+  font-size: 48px;
+  margin-bottom: 30px;
+}
+
+.input-box {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #dbdb;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.btn {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  background: #0095f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.error {
+  color: #ed4956;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.link {
+  color: #0095f6;
   cursor: pointer;
   font-weight: 600;
-}
-
-button:hover {
-  background: var(--burgundy-dark);
-}
-.follow-btn {
-  margin-left: auto;
-  background: var(--burgundy);
-  color: var(--white);
-  border: none;
-  padding: 6px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.follow-btn:hover {
-  background: var(--burgundy-dark);
+  font-size: 14px;
+  margin-top: 20px;
 }
