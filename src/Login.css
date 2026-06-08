@@ -1,0 +1,129 @@
+.login-container {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #800020 0%, #5a0017 100%);
+  margin: 0;
+  padding: 0;
+}
+
+.login-box {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 15px;
+}
+
+.app-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #800020;
+  margin-bottom: 5px;
+}
+
+.tagline {
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.login-input:focus {
+  border: 1px solid #800020;
+  outline: none;
+}
+
+.forgot-link {
+  text-align: right;
+  margin: 5px 0 15px;
+}
+
+.forgot-link a {
+  color: #800020;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: #800020;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background: #5a0017;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  color: #999;
+  margin: 25px 0;
+  font-size: 14px;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+
+.divider::before { margin-right: 10px; }
+.divider::after { margin-left: 10px; }
+
+.google-btn {
+  width: 100%;
+  padding: 14px;
+  background: white;
+  color: #333;
+  border: 1px solid #800020;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.signup-text {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.signup-link {
+  color: #800020;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.help-link {
+  display: block;
+  margin-top: 15px;
+  font-size: 13px;
+  color: #999;
+  text-decoration: none;
+}
