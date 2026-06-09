@@ -1,184 +1,199 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [isLogin, setIsLogin] = useState(true)
   const [currentUser, setCurrentUser] = useState('')
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const [caption, setCaption] = useState('')
-  const [image, setImage] = useState(null)
   const [posts, setPosts] = useState([])
-  const [commentText, setCommentText] = useState('')
+  const [caption, setCaption] = useState('')
+  const [file, setFile] = useState(null)
+  const [preview, setPreview] = useState('')
+  const [fileType, setFileType] = useState('image')
+  const fileInputRef = useRef()
 
-  const handleSignup = (e) => {
-    e.preventDefault()
-    setError('')
-    if (password!== confirmPassword) return setError('Passwords do not match')
-    const users = JSON.parse(localStorage.getItem('instory_users') || '[]')
-    if (users.find(u => u.username === username)) return setError('Username already taken')
-    users.push({ username, email, password })
-    localStorage.setItem('instory_users', JSON.stringify(users))
-    alert(`Account created! Welcome ${username}`)
-    setIsLogin(true)
-    setUsername(''); setEmail(''); setPassword(''); setConfirmPassword('')
+  // Load from localStorage
+  useEffect(() => {
+    const savedUser = localStorage.getItem('instory_user')
+    const savedPosts = localStorage.getItem('instory_posts')
+    if (savedUser) {
+      setCurrentUser(savedUser)
+      setIsLoggedIn(true)
+    }
+    if (savedPosts) setPosts(JSON.parse(savedPosts))
+  }, [])
+
+  // Save posts
+  useEffect(() => {
+    localStorage.setItem('instory_posts', JSON.stringify(posts))
+  }, [posts])
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0]
+    if (selectedFile) {
+      setFile(selectedFile)
+      setPreview(URL.createObjectURL(selectedFile))
+      setFileType(selectedFile.type.startsWith('video')? 'video' : 'image')
+    }
   }
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    setError('')
-    const users = JSON.parse(localStorage.getItem('instory_users') || '[]')
-    const user = users.find(u => u.username === username && u.password === password)
-    if (user) {
-      setIsLoggedIn(true)
-      setCurrentUser(user.username)
-      const savedPosts = JSON.parse(localStorage.getItem(`posts_${user.username}`) || '[]')
-      setPosts(savedPosts)
-      setUsername(''); setPassword('')
-    } else setError('Invalid username or password')
+  const handlePost = () => {
+    if (!file ||!caption) return alert('Add file + caption Ma!')
+
+    const newPost = {
+      id: Date.now(),
+      user: currentUser,
+      caption,
+      fileUrl: preview,
+      fileType,
+      likes: 0,
+      comments: [],
+      liked: false
+    }
+
+    setPosts([newPost,...posts]) // Add new post on TOP
+    setCaption('')
+    setFile(null)
+    setPreview('')
+    fileInputRef.current.value = ''
+  }
+
+  const handleLike = (id) => {
+    setPosts(posts.map(p =>
+      p.id === id
+       ? {...p, likes: p.liked? p.likes - 1 : p.likes + 1, liked:!p.liked}
+        : p
+    ))
+  }
+
+  const handleComment = (id, comment) => {
+    if (!comment) return
+    setPosts(posts.map(p =>
+      p.id === id
+       ? {...p, comments: [...p.comments, {user: currentUser, text: comment}]}
+        : p
+    ))
+  }
+
+  const handleDelete = (id) => {
+    if (confirm('Delete this post Ma?')) {
+      setPosts(posts.filter(p => p.id!== id))
+    }
   }
 
   const handleLogout = () => {
-    localStorage.setItem(`posts_${currentUser}`, JSON.stringify(posts))
+    localStorage.removeItem('instory_user')
     setIsLoggedIn(false)
-    setPosts([])
-    setCaption('')
-    setImage(null)
-    setCommentText('')
+    setCurrentUser('')
   }
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => setImage(event.target.result)
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const handlePost = (e) => {
-    e.preventDefault()
-    if (!caption.trim() &&!image) return
-    const newPost = {id: Date.now(), username: currentUser, caption: caption, image: image, likes: 0, comments: []}
-    const updatedPosts = [newPost,...posts]
-    setPosts(updatedPosts)
-    setCaption('')
-    setImage(null)
-  }
-
-  const handleLike = (postId) => {
-    const updatedPosts = posts.map(post => post.id === postId? {...post, likes: post.likes + 1} : post)
-    setPosts(updatedPosts)
-  }
-
-  const handleComment = (postId, e) => {
-    e.preventDefault()
-    if (!commentText.trim()) return
-    const updatedPosts = posts.map(post =>
-      post.id === postId
-     ? {...post, comments: [...(post.comments || []), {user: currentUser, text: commentText}]}
-      : post
-    )
-    setPosts(updatedPosts)
-    setCommentText('')
-  }
-
-  const handleDelete = (postId) => {
-    if (window.confirm('Delete this post?')) {
-      const updatedPosts = posts.filter(post => post.id !== postId)
-      setPosts(updatedPosts)
-      localStorage.setItem(`posts_${currentUser}`, JSON.stringify(updatedPosts))
-    }
-  }
-
-  if (isLoggedIn) {
-    return (
-      <div>
-        <nav style={{padding: '1rem', background: 'white', borderBottom: '2px solid #800020', display: 'flex', justifyContent: 'space-between'}}>
-          <h2>Instory</h2>
-          <button onClick={handleLogout} style={{padding: '8px 16px', background: '#800020', color: 'white', border: 'none', borderRadius: '4px'}}>Logout</button>
-        </nav>
-        <div style={{maxWidth: '600px', margin: '2rem auto', padding: '1rem'}}>
-          <h1>Welcome {currentUser}!</h1>
-
-          <div style={{background: 'white', padding: '1rem', border: '1px solid #ddd', borderRadius: '8px', marginBottom: '1rem'}}>
-            <form onSubmit={handlePost}>
-              <textarea placeholder="Write caption..." value={caption} onChange={(e) => setCaption(e.target.value)} rows="3" style={{width: '100%', padding: '10px', boxSizing: 'border-box'}}/>
-              <input type="file" accept="image/*" onChange={handleImageUpload} style={{margin: '10px 0', width: '100%'}}/>
-              {image && <img src={image} alt="preview" style={{width: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '8px', marginBottom: '10px'}}/>}
-              <button type="submit" style={{width: '100%', padding: '10px', background: '#800020', color: 'white', border: 'none', marginTop: '10px'}}>Post</button>
-            </form>
-          </div>
-
-          {posts.length === 0? <p>No posts yet</p> :
-            posts.map(post => (
-              <div key={post.id} style={{background: 'white', padding: '1rem', border: '1px solid #ddd', borderRadius: '8px', marginBottom: '1rem'}}>
-                <p><strong>@{post.username}</strong></p>
-                {post.image && <img src={post.image} alt="post" style={{width: '100%', borderRadius: '8px', marginBottom: '10px'}}/>}
-                <p>{post.caption}</p>
-                <button onClick={() => handleLike(post.id)} style={{padding: '8px 12px', background: '#800020', color: 'white', border: 'none', borderRadius: '4px'}}>❤️ {post.likes}</button>
-
-                <div style={{marginTop: '15px', paddingTop: '10px', borderTop: '1px solid #eee'}}>
-                  {(post.comments || []).map((c, i) => (
-                    <p key={i} style={{fontSize: '0.9rem', margin: '4px 0'}}><strong>@{c.user}:</strong> {c.text}</p>
-                  ))}
-                  <form onSubmit={(e) => handleComment(post.id, e)} style={{display: 'flex', marginTop: '8px'}}>
-                    <input type="text" placeholder="Add comment..." value={commentText} onChange={(e) => setCommentText(e.target.value)} style={{flex: 1, padding: '8px', border: '1px solid #ddd', borderRadius: '4px'}}/>
-                    <button type="submit" style={{padding: '8px 12px', background: '#800020', color: 'white', border: 'none', marginLeft: '5px', borderRadius: '4px'}}>Post</button>
-                  </form>
-                </div>
-
-                {post.username === currentUser && (
-                  <button 
-                    onClick={() => handleDelete(post.id)} 
-                    style={{marginTop: '10px', padding: '6px 12px', background: '#ed4956', color: 'white', border: 'none', borderRadius: '4px', fontSize: '12px', cursor: 'pointer', width: '100%'}}
-                  >
-                    🗑️ Delete Post
-                  </button>
-                )}
-
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    )
+  // Login/Signup UI - keeping your brown theme
+  if (!isLoggedIn) {
+    return <Login onLogin={(user) => {setCurrentUser(user); setIsLoggedIn(true); localStorage.setItem('instory_user', user)}} />
   }
 
   return (
-    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#fafafa'}}>
-      <div style={{background: 'white', padding: '2rem', border: '1px solid #ddd', borderRadius: '8px', width: '350px'}}>
-        <h1 style={{color: '#800020', textAlign: 'center', fontSize: '2.5rem', marginBottom: '0.5rem'}}>Instory</h1>
-        <p style={{textAlign: 'center', color: '#666', marginBottom: '1.5rem', fontSize: '0.9rem'}}>Share your story, your way</p>
+    <div className="app">
+      <header>
+        <h1>Instory</h1>
+        <div>
+          <span>Hi {currentUser} 💛</span>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      </header>
 
-        <form onSubmit={isLogin? handleLogin : handleSignup}>
-          <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required style={{width: '100%', padding: '12px', margin: '8px 0', border: '1px solid #ddd', borderRadius: '4px', boxSizing: 'border-box'}} />
-          {!isLogin && <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{width: '100%', padding: '12px', margin: '8px 0', border: '1px solid #ddd', borderRadius: '4px', boxSizing: 'border-box'}} />}
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{width: '100%', padding: '12px', margin: '8px 0', border: '1px solid #ddd', borderRadius: '4px', boxSizing: 'border-box'}} />
-          {!isLogin && <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required style={{width: '100%', padding: '12px', margin: '8px 0', border: '1px solid #ddd', borderRadius: '4px', boxSizing: 'border-box'}} />}
-          {error && <p style={{color: 'red', fontSize: '0.8rem', textAlign: 'center', margin: '8px 0'}}>{error}</p>}
+      {/* Create Post */}
+      <div className="create-post">
+        <input
+          type="file"
+          accept="image/*,video/*"
+          onChange={handleFileChange}
+          ref={fileInputRef}
+        />
+        {preview && fileType === 'image' && <img src={preview} className="preview" />}
+        {preview && fileType === 'video' && <video src={preview} controls className="preview" />}
+        <input
+          placeholder="Write caption Ma..."
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+        />
+        <button onClick={handlePost}>Post</button>
+      </div>
 
-          {isLogin && <p style={{textAlign: 'right', fontSize: '0.8rem', color: '#800020', cursor: 'pointer', margin: '4px 0'}}>Forgot password?</p>}
+      {/* FEED - Multiple Posts */}
+      <div className="feed">
+        {posts.length === 0? (
+          <p className="no-posts">No posts yet Ma. Be the first! 📸</p>
+        ) : (
+          posts.map(post => (
+            <div key={post.id} className="post-card">
+              <div className="post-header">
+                <b>@{post.user}</b>
+                {post.user === currentUser && (
+                  <button onClick={() => handleDelete(post.id)}>Delete</button>
+                )}
+              </div>
 
-          <button type="submit" style={{width: '100%', padding: '12px', background: '#800020', color: 'white', border: 'none', borderRadius: '4px', marginTop: '10px', fontWeight: 'bold'}}>{isLogin? "Login" : "Sign Up"}</button>
-        </form>
+              {post.fileType === 'image'
+               ? <img src={post.fileUrl} className="post-media" />
+                : <video src={post.fileUrl} controls className="post-media" />
+              }
 
-        <div style={{textAlign: 'center', margin: '1rem 0', color: '#999', fontSize: '0.8rem'}}>OR</div>
+              <div className="post-actions">
+                <button onClick={() => handleLike(post.id)}>
+                  {post.liked? '❤️' : '🤍'} {post.likes}
+                </button>
+              </div>
 
-        <button type="button" onClick={() => alert('Google login coming later!')} style={{width: '100%', padding: '12px', background: 'white', color: '#333', border: '1px solid #ddd', borderRadius: '4px', marginBottom: '1rem'}}>Continue with Google</button>
+              <p className="caption"><b>@{post.user}</b> {post.caption}</p>
 
-        <p style={{textAlign: 'center', fontSize: '0.9rem', marginTop: '1rem'}}>
-          {isLogin? "Don't have an account?" : "Already have an account?"}
-          <span style={{color: '#800020', cursor: 'pointer', fontWeight: 'bold'}} onClick={() => {setIsLogin(!isLogin); setError('')}}> {isLogin? "Sign up" : "Login"}</span>
-        </p>
-
-        <p style={{textAlign: 'center', fontSize: '0.75rem', color: '#999', marginTop: '1.5rem'}}>Help Centre</p>
+              <div className="comments">
+                {post.comments.map((c, i) => (
+                  <p key={i}><b>@{c.user}</b> {c.text}</p>
+                ))}
+                <CommentBox onSend={(text) => handleComment(post.id, text)} />
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   )
 }
+
+// Simple Login Component
+function Login({ onLogin }) {
+  const [user, setUser] = useState('')
+  const [pass, setPass] = useState('')
+
+  const handleSubmit = () => {
+    if (user && pass) {
+      onLogin(user)
+    } else alert('Enter username + password Ma')
+  }
+
+  return (
+    <div className="login-box">
+      <h2>Instory Login</h2>
+      <input placeholder="Username" value={user} onChange={e => setUser(e.target.value)} />
+      <input type="password" placeholder="Password" value={pass} onChange={e => setPass(e.target.value)} />
+      <button onClick={handleSubmit}>Login / Signup</button>
+    </div>
+  )
+}
+
+// Comment Input
+function CommentBox({ onSend }) {
+  const [text, setText] = useState('')
+  return (
+    <div className="comment-box">
+      <input
+        placeholder="Add comment..."
+        value={text}
+        onChange={e => setText(e.target.value)}
+      />
+      <button onClick={() => {onSend(text); setText('')}}>Post</button>
+    </div>
+  )
+}
+
 export default App
