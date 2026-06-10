@@ -1,6 +1,10 @@
-import { createClient } from '@supabase/supabase.js'
+import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://YOUR-PROJECT-REF.supabase.co'
-const supabaseKey = 'sb_publishable_AIvSB8e34VXP1-ldf3cs_Q_sfqA1yO4' 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase env vars. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel')
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
