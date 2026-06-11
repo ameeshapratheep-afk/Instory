@@ -3,9 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "pnpm@8.15.0",
   "scripts": {
     "build": "vite build",
-    "dev": "vite",
-    "install": "npm install --legacy-peer-deps"
+    "dev": "vite"
   }
 }
