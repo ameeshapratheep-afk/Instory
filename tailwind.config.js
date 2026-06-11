@@ -3,6 +3,12 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  theme: { extend: {} },
+  theme: {
+    extend: {
+      colors: {
+        burgundy: '#800020'
+      }
+    },
+  },
   plugins: [],
 }
