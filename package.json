@@ -1,5 +1,8 @@
-{
-  "name": "inistory",
+   "tailwindcss": "^3.x",
+   "postcss": "^8.x", 
+   "autoprefixer": "^10.x"
+   {
+  "name": "instory",
   "private": true,
   "version": "1.0.0",
   "type": "module",
