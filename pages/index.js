@@ -43,10 +43,10 @@ export default function Login() {
     <>
       <Head>
         <title>InStory - Login</title>
-        <link href="https://fonts.cdnfonts.com/css/utendo" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <style jsx global>{`
           * {
-            font-family: 'Utendo', sans-serif !important;
+            font-family: 'Lexend Deca', sans-serif !important;
           }
           body {
             margin: 0;
