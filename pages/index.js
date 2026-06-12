@@ -43,11 +43,13 @@ export default function Login() {
     <>
       <Head>
         <title>InStory - Login</title>
-        <link href="https://fonts.cdnfonts.com/css/cocogoose" rel="stylesheet" />
+        <link href="https://fonts.cdnfonts.com/css/utendo" rel="stylesheet" />
         <style jsx global>{`
+          * {
+            font-family: 'Utendo', sans-serif !important;
+          }
           body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #f8f9fa;
           }
           input:focus {
@@ -77,8 +79,7 @@ export default function Login() {
             fontSize: '36px',
             fontWeight: '700',
             marginBottom: '40px',
-            color: '#1a1a1a',
-            fontFamily: "'Cocogoose', sans-serif",
+            color: '#800020',
             letterSpacing: '1px'
           }}>
             InStory
@@ -100,8 +101,7 @@ export default function Login() {
                 outline: 'none',
                 background: lightBurgundy,
                 boxSizing: 'border-box',
-                transition: 'all 0.2s',
-                fontFamily: 'inherit'
+                transition: 'all 0.2s'
               }} 
               required
             />
@@ -121,8 +121,7 @@ export default function Login() {
                 outline: 'none',
                 background: lightBurgundy,
                 boxSizing: 'border-box',
-                transition: 'all 0.2s',
-                fontFamily: 'inherit'
+                transition: 'all 0.2s'
               }} 
               required
             />
@@ -150,7 +149,6 @@ export default function Login() {
                 cursor: 'pointer',
                 marginBottom: '25px',
                 transition: 'background 0.2s',
-                fontFamily: "'Cocogoose', sans-serif",
                 letterSpacing: '0.5px'
               }}
               onMouseOver={(e) => e.target.style.background = burgundyHover}
@@ -184,8 +182,7 @@ export default function Login() {
               fontSize: '15px',
               cursor: 'pointer',
               marginBottom: '25px',
-              transition: 'border 0.2s',
-              fontFamily: 'inherit'
+              transition: 'border 0.2s'
             }}
             onMouseOver={(e) => e.target.style.borderColor = burgundy}
             onMouseOut={(e) => e.target.style.borderColor = '#ddd'}
