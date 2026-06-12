@@ -11,26 +11,32 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    alert(`Login clicked!\nUsername: ${username}\nPassword: ${password}\n\nBackend connection coming next`)
+    if(username.trim() === '' || password.trim() === '') {
+      alert('❌ Please fill both Username and Password')
+      return
+    }
+    alert(`✅ Login Successful!\n\nWelcome ${username} to InStory\nNote: This is demo success. Real database check coming next.`)
+    setUsername('')
+    setPassword('')
   }
 
   const handleGoogle = () => {
-    alert('Continue with Google - will connect to Firebase later')
+    alert('Continue with Google\nFirebase connection coming next')
   }
 
   const handleForgot = (e) => {
     e.preventDefault()
-    alert('Forgot password page coming soon')
+    alert('Forgot password\nReset link feature coming soon')
   }
 
   const handleSignup = (e) => {
     e.preventDefault() 
-    alert('Signup page coming soon')
+    alert('Sign up\nRegistration page coming soon')
   }
 
   const handleHelp = (e) => {
     e.preventDefault()
-    alert('Help Centre coming soon')
+    alert('Help Centre\nSupport page coming soon')
   }
 
   return (
