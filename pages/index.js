@@ -5,14 +5,33 @@ export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Login:', username, password)
-  }
-
   const burgundy = '#800020'
   const lightBurgundy = '#f5e6e9'
   const burgundyHover = '#6a001a'
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    alert(`Login clicked!\nUsername: ${username}\nPassword: ${password}\n\nBackend connection coming next`)
+  }
+
+  const handleGoogle = () => {
+    alert('Continue with Google - will connect to Firebase later')
+  }
+
+  const handleForgot = (e) => {
+    e.preventDefault()
+    alert('Forgot password page coming soon')
+  }
+
+  const handleSignup = (e) => {
+    e.preventDefault() 
+    alert('Signup page coming soon')
+  }
+
+  const handleHelp = (e) => {
+    e.preventDefault()
+    alert('Help Centre coming soon')
+  }
 
   return (
     <>
@@ -23,6 +42,10 @@ export default function Login() {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #f8f9fa;
+          }
+          input:focus {
+            border-color: ${burgundy} !important;
+            box-shadow: 0 0 0 2px rgba(128, 0, 32, 0.1);
           }
         `}</style>
       </Head>
@@ -67,7 +90,8 @@ export default function Login() {
                 fontSize: '15px',
                 outline: 'none',
                 background: lightBurgundy,
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                transition: 'all 0.2s'
               }} 
               required
             />
@@ -86,16 +110,18 @@ export default function Login() {
                 fontSize: '15px',
                 outline: 'none',
                 background: lightBurgundy,
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                transition: 'all 0.2s'
               }} 
               required
             />
 
             <div style={{textAlign: 'right', marginBottom: '20px'}}>
-              <a href="#" style={{
+              <a href="#" onClick={handleForgot} style={{
                 fontSize: '13px',
                 color: '#666',
-                textDecoration: 'none'
+                textDecoration: 'none',
+                cursor: 'pointer'
               }}>Forgot password?</a>
             </div>
 
@@ -111,7 +137,8 @@ export default function Login() {
                 fontSize: '16px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                marginBottom: '25px'
+                marginBottom: '25px',
+                transition: 'background 0.2s'
               }}
               onMouseOver={(e) => e.target.style.background = burgundyHover}
               onMouseOut={(e) => e.target.style.background = burgundy}
@@ -132,26 +159,32 @@ export default function Login() {
             <div style={{flex: 1, height: '1px', background: '#e0e0e0'}}></div>
           </div>
 
-          <button style={{
-            width: '100%',
-            padding: '12px',
-            background: 'white',
-            color: '#333',
-            border: '1px solid #ddd',
-            borderRadius: '8px',
-            fontSize: '15px',
-            cursor: 'pointer',
-            marginBottom: '25px'
-          }}>
+          <button 
+            onClick={handleGoogle}
+            style={{
+              width: '100%',
+              padding: '12px',
+              background: 'white',
+              color: '#333',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              fontSize: '15px',
+              cursor: 'pointer',
+              marginBottom: '25px',
+              transition: 'border 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.borderColor = burgundy}
+            onMouseOut={(e) => e.target.style.borderColor = '#ddd'}
+          >
             Continue with Google
           </button>
 
           <div style={{textAlign: 'center', fontSize: '14px', color: '#666'}}>
-            Don't have an account? <a href="#" style={{color: burgundy, fontWeight: '600', textDecoration: 'none'}}>Sign up</a>
+            Don't have an account? <a href="#" onClick={handleSignup} style={{color: burgundy, fontWeight: '600', textDecoration: 'none', cursor: 'pointer'}}>Sign up</a>
           </div>
 
           <div style={{textAlign: 'center', marginTop: '15px', fontSize: '13px'}}>
-            <a href="#" style={{color: '#999', textDecoration: 'none'}}>Help Centre</a>
+            <a href="#" onClick={handleHelp} style={{color: '#999', textDecoration: 'none', cursor: 'pointer'}}>Help Centre</a>
           </div>
         </div>
       </div>
