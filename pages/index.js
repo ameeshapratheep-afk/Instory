@@ -43,6 +43,7 @@ export default function Login() {
     <>
       <Head>
         <title>InStory - Login</title>
+        <link href="https://fonts.cdnfonts.com/css/cocogoose" rel="stylesheet" />
         <style jsx global>{`
           body {
             margin: 0;
@@ -73,10 +74,12 @@ export default function Login() {
         }}>
           <h1 style={{
             textAlign: 'center',
-            fontSize: '32px',
+            fontSize: '36px',
             fontWeight: '700',
             marginBottom: '40px',
-            color: '#1a1a1a'
+            color: '#1a1a1a',
+            fontFamily: "'Cocogoose', sans-serif",
+            letterSpacing: '1px'
           }}>
             InStory
           </h1>
@@ -97,7 +100,8 @@ export default function Login() {
                 outline: 'none',
                 background: lightBurgundy,
                 boxSizing: 'border-box',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                fontFamily: 'inherit'
               }} 
               required
             />
@@ -117,7 +121,8 @@ export default function Login() {
                 outline: 'none',
                 background: lightBurgundy,
                 boxSizing: 'border-box',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                fontFamily: 'inherit'
               }} 
               required
             />
@@ -144,7 +149,9 @@ export default function Login() {
                 fontWeight: '600',
                 cursor: 'pointer',
                 marginBottom: '25px',
-                transition: 'background 0.2s'
+                transition: 'background 0.2s',
+                fontFamily: "'Cocogoose', sans-serif",
+                letterSpacing: '0.5px'
               }}
               onMouseOver={(e) => e.target.style.background = burgundyHover}
               onMouseOut={(e) => e.target.style.background = burgundy}
@@ -177,7 +184,8 @@ export default function Login() {
               fontSize: '15px',
               cursor: 'pointer',
               marginBottom: '25px',
-              transition: 'border 0.2s'
+              transition: 'border 0.2s',
+              fontFamily: 'inherit'
             }}
             onMouseOver={(e) => e.target.style.borderColor = burgundy}
             onMouseOut={(e) => e.target.style.borderColor = '#ddd'}
