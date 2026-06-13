@@ -1,37 +1,81 @@
 import Head from 'next/head'
 import { useState } from 'react'
+import { auth, googleProvider } from '../lib/firebase'
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  sendPasswordResetEmail
+} from 'firebase/auth'
 
 export default function Login() {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const burgundy = '#800020'
   const lightBurgundy = '#f5e6e9'
   const burgundyHover = '#6a001a'
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    if(username.trim() === '' || password.trim() === '') {
-      alert('❌ Please fill both Username and Password')
+    if(email.trim() === '' || password.trim() === '') {
+      alert('❌ Please fill both Email and Password')
       return
     }
-    alert(`✅ Login Successful!\n\nWelcome ${username} to InStory\nNote: This is demo success. Real database check coming next.`)
-    setUsername('')
-    setPassword('')
+    setLoading(true)
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      alert(`✅ Login Successful!\n\nWelcome to InStory`)
+      setEmail('')
+      setPassword('')
+    } catch (error) {
+      alert(`❌ Login Failed: ${error.message}`)
+    }
+    setLoading(false)
   }
 
-  const handleGoogle = () => {
-    alert('Continue with Google\nFirebase connection coming next')
-  }
-
-  const handleForgot = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault()
-    alert('Forgot password\nReset link feature coming soon')
+    if(email.trim() === '' || password.trim() === '') {
+      alert('❌ Please fill both Email and Password')
+      return
+    }
+    setLoading(true)
+    try {
+      await createUserWithEmailAndPassword(auth, email, password)
+      alert(`✅ Account Created!\n\nWelcome to InStory`)
+      setEmail('')
+      setPassword('')
+    } catch (error) {
+      alert(`❌ Signup Failed: ${error.message}`)
+    }
+    setLoading(false)
   }
 
-  const handleSignup = (e) => {
-    e.preventDefault() 
-    alert('Sign up\nRegistration page coming soon')
+  const handleGoogle = async () => {
+    setLoading(true)
+    try {
+      await signInWithPopup(auth, googleProvider)
+      alert('✅ Google Login Successful!\n\nWelcome to InStory')
+    } catch (error) {
+      alert(`❌ Google Login Failed: ${error.message}`)
+    }
+    setLoading(false)
+  }
+
+  const handleForgot = async (e) => {
+    e.preventDefault()
+    if(email.trim() === '') {
+      alert('❌ Enter your email first to reset password')
+      return
+    }
+    try {
+      await sendPasswordResetEmail(auth, email)
+      alert('✅ Password reset email sent! Check inbox')
+    } catch (error) {
+      alert(`❌ Error: ${error.message}`)
+    }
   }
 
   const handleHelp = (e) => {
@@ -85,12 +129,12 @@ export default function Login() {
             InStory
           </h1>
 
-          <form onSubmit={handleSubmit}>
+          <form>
             <input 
-              type="text" 
-              placeholder="Username" 
-              value={username} 
-              onChange={(e)=>setUsername(e.target.value)} 
+              type="email" 
+              placeholder="Email" 
+              value={email} 
+              onChange={(e)=>setEmail(e.target.value)} 
               style={{
                 width: '100%',
                 padding: '14px 16px',
@@ -100,8 +144,7 @@ export default function Login() {
                 fontSize: '15px',
                 outline: 'none',
                 background: lightBurgundy,
-                boxSizing: 'border-box',
-                transition: 'all 0.2s'
+                boxSizing: 'border-box'
               }} 
               required
             />
@@ -120,8 +163,7 @@ export default function Login() {
                 fontSize: '15px',
                 outline: 'none',
                 background: lightBurgundy,
-                boxSizing: 'border-box',
-                transition: 'all 0.2s'
+                boxSizing: 'border-box'
               }} 
               required
             />
@@ -136,7 +178,8 @@ export default function Login() {
             </div>
 
             <button 
-              type="submit" 
+              onClick={handleLogin}
+              disabled={loading}
               style={{
                 width: '100%',
                 padding: '14px',
@@ -146,17 +189,33 @@ export default function Login() {
                 borderRadius: '8px',
                 fontSize: '16px',
                 fontWeight: '600',
-                cursor: 'pointer',
-                marginBottom: '25px',
-                transition: 'background 0.2s',
-                letterSpacing: '0.5px'
+                cursor: loading ? 'not-allowed' : 'pointer',
+                marginBottom: '12px',
+                opacity: loading ? 0.7 : 1
               }}
-              onMouseOver={(e) => e.target.style.background = burgundyHover}
-              onMouseOut={(e) => e.target.style.background = burgundy}
             >
-              Login
+              {loading ? 'Loading...' : 'Login'}
             </button>
           </form>
+
+          <button 
+            onClick={handleSignup}
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '14px',
+              background: 'white',
+              color: burgundy,
+              border: `2px solid ${burgundy}`,
+              borderRadius: '8px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              marginBottom: '25px'
+            }}
+          >
+            Sign up
+          </button>
 
           <div style={{
             display: 'flex',
@@ -172,6 +231,7 @@ export default function Login() {
 
           <button 
             onClick={handleGoogle}
+            disabled={loading}
             style={{
               width: '100%',
               padding: '12px',
@@ -180,19 +240,12 @@ export default function Login() {
               border: '1px solid #ddd',
               borderRadius: '8px',
               fontSize: '15px',
-              cursor: 'pointer',
-              marginBottom: '25px',
-              transition: 'border 0.2s'
+              cursor: loading ? 'not-allowed' : 'pointer',
+              marginBottom: '25px'
             }}
-            onMouseOver={(e) => e.target.style.borderColor = burgundy}
-            onMouseOut={(e) => e.target.style.borderColor = '#ddd'}
           >
             Continue with Google
           </button>
-
-          <div style={{textAlign: 'center', fontSize: '14px', color: '#666'}}>
-            Don't have an account? <a href="#" onClick={handleSignup} style={{color: burgundy, fontWeight: '600', textDecoration: 'none', cursor: 'pointer'}}>Sign up</a>
-          </div>
 
           <div style={{textAlign: 'center', marginTop: '15px', fontSize: '13px'}}>
             <a href="#" onClick={handleHelp} style={{color: '#999', textDecoration: 'none', cursor: 'pointer'}}>Help Centre</a>
