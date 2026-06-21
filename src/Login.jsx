@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { supabase } from './supabase'
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { auth, googleProvider } from '../firebase'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -11,66 +12,135 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-    
-    if (error) setError(error.message)
-    setLoading(false)
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+    } catch (err) {
+      setError(err.message)
+      setLoading(false)
+    }
+  }
+
+  const handleGoogle = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      await signInWithPopup(auth, googleProvider)
+    } catch (err) {
+      setError(err.message)
+      setLoading(false)
+    }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-lg shadow-md p-8 space-y-6">
-        <h2 className="text-2xl font-bold text-center text-gray-900">
-          Login to Instory
-        </h2>
-        
-        {error && (
-          <div className="bg-red-50 text-red-600 text-sm p-3 rounded">
-            {error}
-          </div>
-        )}
-        
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-2 border-gray-300 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy outline-none"
-              placeholder="you@email.com"
-            />
-          </div>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#f5f5f5'
+    }}>
+      <div style={{
+        background: 'white',
+        padding: '40px 30px',
+        borderRadius: '12px',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+        width: '100%',
+        maxWidth: '400px'
+      }}>
+        <h1 style={{textAlign: 'center', fontSize: '28px', fontWeight: 'bold', marginBottom: '8px'}}>InStory</h1>
+        <p style={{textAlign: 'center', color: '#666', marginBottom: '30px'}}>Share your story, your way</p>
+
+        {error && <div style={{background: '#fee', color: '#c00', padding: '10px', borderRadius: '6px', marginBottom: '15px', fontSize: '14px'}}>{error}</div>}
+
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={{
+              width: '100%',
+              padding: '12px',
+              marginBottom: '12px',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              background: '#e8f4ff',
+              fontSize: '15px',
+              boxSizing: 'border-box'
+            }}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={{
+              width: '100%',
+              padding: '12px',
+              marginBottom: '8px',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              background: '#e8f4ff',
+              fontSize: '15px',
+              boxSizing: 'border-box'
+            }}
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2 border-gray-300 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy outline-none"
-              placeholder="••••"
-            />
+          <div style={{textAlign: 'right', marginBottom: '20px'}}>
+            <a href="#" style={{fontSize: '13px', color: '#666'}}>Forgot password?</a>
           </div>
-          
-          <button
-            type="submit"
+
+          <button 
+            type="submit" 
             disabled={loading}
-            className="w-full bg-burgundy hover:bg-[#660018] disabled:bg-gray-400 text-white font-semibold py-3 rounded-lg transition"
+            style={{
+              width: '100%',
+              backgroundColor: '#800020',
+              color: 'white',
+              fontWeight: '600',
+              padding: '12px',
+              borderRadius: '6px',
+              border: 'none',
+              fontSize: '16px',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1
+            }}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div style={{display: 'flex', alignItems: 'center', margin: '25px 0'}}>
+          <div style={{flex: 1, height: '1px', background: '#ddd'}}></div>
+          <span style={{padding: '0 10px', color: '#999', fontSize: '13px'}}>OR</span>
+          <div style={{flex: 1, height: '1px', background: '#ddd'}}></div>
+        </div>
+
+        <button 
+          onClick={handleGoogle}
+          disabled={loading}
+          style={{
+            width: '100%',
+            padding: '12px',
+            borderRadius: '6px',
+            border: '1px solid #ddd',
+            background: 'white',
+            fontSize: '15px',
+            cursor: loading ? 'not-allowed' : 'pointer'
+          }}
+        >
+          Continue with Google
+        </button>
+
+        <p style={{textAlign: 'center', marginTop: '25px', fontSize: '14px', color: '#666'}}>
+          Don't have an account? <a href="/signup" style={{color: '#800020', fontWeight: '600'}}>Sign up</a>
+        </p>
+        
+        <p style={{textAlign: 'center', marginTop: '10px'}}>
+          <a href="#" style={{fontSize: '13px', color: '#999'}}>Help Centre</a>
+        </p>
       </div>
     </div>
   )
