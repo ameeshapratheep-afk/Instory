@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app'
-import { auth } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBJ9TbxzAlRrlqdCdUzKo4haDNAwRWe_wo",
-  authDomain: "instory-app-78ca9.firebaseapp.com"
+  apiKey: "AIzaSyBJ9TbxzAlRr1qdCdUzKo4haDNAwRWe_wo",
+  authDomain: "instory-app-78ca9.firebaseapp.com",
   projectId: "instory-app-78ca9",
   storageBucket: "instory-app-78ca9.firebasestorage.app",
   messagingSenderId: "889330601899",
